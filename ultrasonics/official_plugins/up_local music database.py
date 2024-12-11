@@ -43,9 +43,9 @@ log.debug(
     f"Supported extensions for this plugin include: {supported_audio_extensions}")
 
 # Known not-audio files to skip silently
-extension_skiplist = [".jpg", ".png", ".bak", ".dat", ".lrc",
+extension_skiplist = [".jpg", ".jpeg", ".png", ".bak", ".dat", ".lrc",
                       ".lyrics", ".m3u", ".sfk", ".snap", ".temp", ".tmp", ".txt",
-                      ".nfo", ".ds_store", ".unrecoverable"]
+                      ".nfo", ".ds_store", ".unrecoverable", ".ignore"]
 log.debug(
     f"This plugin will automatically skip any files matching the following extensions: {extension_skiplist}")
 
@@ -230,7 +230,7 @@ def run(settings_dict, **kwargs):
                 # Check extension is supported
                 _, ext = os.path.splitext(item)
                 ext = ext.lower()
-                if ext in extension_skiplist:
+                if ext is None or ext.strip() == "" or ext in extension_skiplist:
                     # Silently skip the file
                     continue
 
@@ -280,6 +280,8 @@ def run(settings_dict, **kwargs):
 
     total_count = 0
     matched_count = 0
+    fuzzy_ratio = database.get("fuzzy_ratio")
+    log.info(f"using fuzzy_ratio {fuzzy_ratio}")
 
     for i, playlist in enumerate(songs_dict):
         for j, song in enumerate(playlist["songs"]):
@@ -312,7 +314,7 @@ def run(settings_dict, **kwargs):
                             continue
 
                         score = fuzzymatch.similarity(song, item)
-                        if score > float(database.get("fuzzy_ratio") or 90):
+                        if score > float(fuzzy_ratio or 90):
                             # Match found
                             songs_dict[i]["songs"][j]["location"] = item["location"]
                             found = True
