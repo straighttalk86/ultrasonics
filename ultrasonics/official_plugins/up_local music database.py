@@ -44,7 +44,8 @@ log.debug(
 
 # Known not-audio files to skip silently
 extension_skiplist = [".jpg", ".png", ".bak", ".dat", ".lrc",
-                      ".lyrics", ".m3u", ".sfk", ".snap", ".temp", ".tmp", ".txt"]
+                      ".lyrics", ".m3u", ".sfk", ".snap", ".temp", ".tmp", ".txt",
+                      ".nfo", ".ds_store", ".unrecoverable"]
 log.debug(
     f"This plugin will automatically skip any files matching the following extensions: {extension_skiplist}")
 
